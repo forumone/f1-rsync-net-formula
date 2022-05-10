@@ -1,3 +1,4 @@
-{% for path in pillar['rsync']['paths'] %}
-{{ path }}
-{% endfor %}
+/var/www/vhosts
+/etc/
+/var/lib/mysqlbackups/
+/var/spool/cron/
