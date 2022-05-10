@@ -26,7 +26,7 @@ generate_rsync_key:
 
 # SSH Config for rsync, set hostname and user
 /root/.ssh/config:
-  file.managed:
+  file.append:
     - user: root
     - group: root
     - mode: 600
@@ -38,16 +38,9 @@ generate_rsync_key:
       - cmd: rsync_copy_id
 
 # Add rsync.net known_hosts entry
-#rsync_known_host:
-#  ssh_known_hosts:
-#    - present
-#    - user: root
-#    - fingerprint: 5f:97:15:54:44:8a:44:7f:ba:8d:b2:ef:51:63:3c:d8
-#    - enc: ssh-dss
-#    - name: usw-s007.rsync.net
-
 "ssh-keyscan -H usw-s007.rsync.net >> ~/.ssh/known_hosts":
-  cmd.run
+  cmd.run:
+    onlyif: /root/.ssh/config
 
 
 # Copy ID to rsync.net
@@ -59,16 +52,10 @@ rsync_copy_id:
     - require: 
       - pkg: sshpass
 
-# List of directories to back up
-# First, empty the file
-blank-rsync:
-  cmd.run:
-    - name: '> /etc/rsync-backup.txt'
-
 # Add our paths from pillar
 {% for path in pillar['rsync']['paths'] %}
 rsync-{{path}}:
-  file.append:
+  file.managed:
     - name: /etc/rsync-backup.txt
     - text: {{ path }}
 {% endfor %}
