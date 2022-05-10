@@ -1,0 +1,3 @@
+{% for path in pillar['rsync']['paths'] %}
+{{ path }}
+{% endfor %}
